@@ -14,9 +14,6 @@ spring:
     import:
 #      - optional:nacos:application-@profiles.active@.yml
       - optional:nacos:${spring.application.name}.yml
-
-#  application:
-#    name: authorization-server
   thymeleaf:
     cache: false
   datasource:
