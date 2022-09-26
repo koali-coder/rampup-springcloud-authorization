@@ -1,0 +1,21 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: rampup-client
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_HOST:220.248.70.147}:${NACOS_PORT:58848}
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+  config:
+    import:
+#      - optional:nacos:application-@profiles.active@.yml
+      - optional:nacos:${spring.application.name}.yml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:9000

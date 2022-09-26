@@ -1,0 +1,71 @@
+server:
+  port: 9999
+
+spring:
+  application:
+    name: rampup-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_HOST:220.248.70.147}:${NACOS_PORT:58848}
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+    gateway:
+      routes[0]:
+        id: nacos-auth-route
+        uri: lb://rampup-auth
+        predicates[0]:
+          name: Path
+          args[pattern]: /auth/**
+        filters[0]: StripPrefix=1
+      routes[1]:
+        id: nacos-client-route
+        uri: lb://rampup-client
+        predicates[0]:
+          name: Path
+          args[pattern]: /client/**
+        filters[0]: StripPrefix=1
+      routes[2]:
+        id: nacos-client2-route
+        uri: lb://rampup-client2
+        predicates[0]:
+          name: Path
+          args[pattern]: /client2/**
+        filters[0]: StripPrefix=1
+  config:
+    import:
+#      - optional:nacos:application.yml
+      - optional:nacos:${spring.application.name}.yml
+
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          jwk-set-uri: 'http://localhost:9000/' #配置RSA的公钥访问地址
+
+
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          mobile-gateway-client-oidc:
+#            provider: spring
+#            client-id: mobile-gateway-client
+#            client-secret: 123456
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "http://127.0.0.1:9100/login/oauth2/code/{registrationId}"
+#            scope: openid
+#          client-gateway-authorization-code:
+#            provider: spring
+#            client-id: mobile-gateway-client
+#            client-secret: 123456
+#            client-authentication-method: client_secret_basic
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "http://127.0.0.1:9100/authorized"
+#            scope: message.read,message.write
+#        provider:
+#          spring:
+#            issuer-uri: http://localhost:9000
+#
+#user-service:
+#  base-uri: http://127.0.0.1:9001/menu/list
