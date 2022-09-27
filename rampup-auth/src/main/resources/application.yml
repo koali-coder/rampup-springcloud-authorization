@@ -27,20 +27,20 @@ spring:
         jwt:
           issuer-uri: http://127.0.0.1:9000  #认证中心端点，作为资源端的配置
 
-  boot:
-    admin:
-      client:
-        url:
-          - "http://192.168.88.144:13000"
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    health:
-      show-details: always
+#  boot:
+#    admin:
+#      client:
+#        url:
+#          - "http://192.168.88.144:13000"
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#  endpoint:
+#    health:
+#      show-details: always
 
 
 application:
