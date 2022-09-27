@@ -1,9 +1,9 @@
 server:
-  port: 8081
+  port: 8083
 
 spring:
   application:
-    name: rampup-client
+    name: rampup-client3
   cloud:
     nacos:
       discovery:
@@ -14,8 +14,3 @@ spring:
     import:
 #      - optional:nacos:application-@profiles.active@.yml
       - optional:nacos:${spring.application.name}.yml
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://192.168.88.177:9000

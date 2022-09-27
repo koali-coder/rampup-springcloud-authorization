@@ -1,5 +1,6 @@
 package org.example.config;
 
+import com.google.gson.Gson;
 import org.example.other.ApplicationProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,10 +9,24 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.context.ProviderContext;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -52,6 +67,18 @@ public class WebSecurityConfig {
         };
     }
 
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer(){
+        return context -> {
+            Authentication principal = context.getPrincipal();
+            Set<String> authorities = principal.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toSet());
+            // todo set userId    authorities 太长
+            context.getClaims().claim("authorities", authorities);
+        };
+    }
+
     /**
      * 针对http请求，进行拦截过滤
      *
@@ -76,10 +103,8 @@ public class WebSecurityConfig {
                 // Spring Security CSRF保护
                 .csrf(csrfToken -> csrfToken.csrfTokenRepository(new CookieCsrfTokenRepository()))
 
-//                 //开启认证服务器的资源服务器相关功能，即需校验token
+                 //开启认证服务器的资源服务器相关功能，即需校验token
 //                .oauth2ResourceServer()
-//                .accessDeniedHandler(new SimpleAccessDeniedHandler())
-//                .authenticationEntryPoint(new SimpleAuthenticationEntryPoint())
 //                .jwt()
         ;
         return httpSecurity.build();

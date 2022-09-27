@@ -32,40 +32,25 @@ spring:
           name: Path
           args[pattern]: /client2/**
         filters[0]: StripPrefix=1
+      routes[3]:
+        id: nacos-client3-route
+        uri: lb://rampup-client3
+        predicates[0]:
+          name: Path
+          args[pattern]: /client3/**
+        filters[0]: StripPrefix=1
   config:
     import:
 #      - optional:nacos:application.yml
       - optional:nacos:${spring.application.name}.yml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:9000  #认证中心端点，作为资源端的配置
 
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          jwk-set-uri: 'http://localhost:9000/' #配置RSA的公钥访问地址
-
-
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          mobile-gateway-client-oidc:
-#            provider: spring
-#            client-id: mobile-gateway-client
-#            client-secret: 123456
-#            authorization-grant-type: authorization_code
-#            redirect-uri: "http://127.0.0.1:9100/login/oauth2/code/{registrationId}"
-#            scope: openid
-#          client-gateway-authorization-code:
-#            provider: spring
-#            client-id: mobile-gateway-client
-#            client-secret: 123456
-#            client-authentication-method: client_secret_basic
-#            authorization-grant-type: authorization_code
-#            redirect-uri: "http://127.0.0.1:9100/authorized"
-#            scope: message.read,message.write
-#        provider:
-#          spring:
-#            issuer-uri: http://localhost:9000
-#
-#user-service:
-#  base-uri: http://127.0.0.1:9001/menu/list
+security:
+  ignore:
+    urls: #配置白名单路径
+      - "/favicon.ico"
+      - "/auth/oauth2/*"
