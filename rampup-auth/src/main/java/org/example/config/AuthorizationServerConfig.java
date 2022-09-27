@@ -70,6 +70,11 @@ public class AuthorizationServerConfig {
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
 
+        //添加自定义授权页面
+        authorizationServerConfigurer.authorizationEndpoint(endpoint -> {
+            endpoint.consentPage("/oauth2/consent");
+        });
+
         http
                 .requestMatcher(endpointsMatcher)
                 .userDetailsService(userService)

@@ -95,10 +95,10 @@ public class WebSecurityConfig {
                 )
 
                 //使用默认登录页面
-                .formLogin(withDefaults())
+//                .formLogin(withDefaults())
 
                 //设置form登录，设置且放开登录页login
-//                .formLogin(fromlogin -> fromlogin.loginPage("/login").permitAll())
+                .formLogin(fromlogin -> fromlogin.loginPage("/login").permitAll())
 
                 // Spring Security CSRF保护
                 .csrf(csrfToken -> csrfToken.csrfTokenRepository(new CookieCsrfTokenRepository()))
