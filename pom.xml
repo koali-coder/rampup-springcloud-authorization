@@ -14,7 +14,6 @@
         <module>rampup-auth</module>
         <module>rampup-client2</module>
         <module>rampup-client3</module>
-        <module>rampup-client4</module>
     </modules>
 
     <properties>
