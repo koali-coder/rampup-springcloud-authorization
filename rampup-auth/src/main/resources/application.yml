@@ -10,14 +10,10 @@ spring:
         server-addr: ${NACOS_HOST:220.248.70.147}:${NACOS_PORT:58848}
       config:
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
-  config:
-    import:
-#      - optional:nacos:application-@profiles.active@.yml
-      - optional:nacos:${spring.application.name}.yml
   thymeleaf:
     cache: false
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/nacos_auth
+    url: jdbc:mysql://127.0.0.1:3306/magus_auth
     username: root
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,22 +22,6 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://127.0.0.1:9000  #认证中心端点，作为资源端的配置
-
-#  boot:
-#    admin:
-#      client:
-#        url:
-#          - "http://192.168.88.144:13000"
-#
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: "*"
-#  endpoint:
-#    health:
-#      show-details: always
-
 
 application:
   security:

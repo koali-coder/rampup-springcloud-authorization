@@ -16,14 +16,14 @@ spring:
         uri: lb://rampup-auth
         predicates[0]:
           name: Path
-          args[pattern]: /auth/**
+          args[pattern]: /auth1/**
         filters[0]: StripPrefix=1
       routes[1]:
         id: nacos-client-route
         uri: lb://rampup-client
         predicates[0]:
           name: Path
-          args[pattern]: /client/**
+          args[pattern]: /client1/**
         filters[0]: StripPrefix=1
       routes[2]:
         id: nacos-client2-route
@@ -39,15 +39,25 @@ spring:
           name: Path
           args[pattern]: /client3/**
         filters[0]: StripPrefix=1
-  config:
-    import:
-#      - optional:nacos:application.yml
-      - optional:nacos:${spring.application.name}.yml
+      routes[4]:
+        id: magus-client-route
+        uri: lb://magus-client
+        predicates[0]:
+          name: Path
+          args[pattern]: /client/**
+        filters[0]: StripPrefix=1
+      routes[5]:
+        id: magus-auth-route
+        uri: lb://magus-auth
+        predicates[0]:
+          name: Path
+          args[pattern]: /auth/**
+        filters[0]: StripPrefix=1
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://127.0.0.1:9000  #认证中心端点，作为资源端的配置
+          issuer-uri: http://127.0.0.1:8001  #认证中心端点，作为资源端的配置
 
 security:
   ignore:

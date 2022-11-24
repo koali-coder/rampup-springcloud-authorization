@@ -32,7 +32,8 @@ public class AuthorizationHandler implements ReactiveAuthorizationManager<Author
     private void initRole() {
         resourceRolesMap = new TreeMap<>();
         resourceRolesMap.put("/client3/client", CollUtil.toList("ADMIN"));
-        resourceRolesMap.put("/client2/client", CollUtil.toList("ADMIN", "TEST"));
+        resourceRolesMap.put("/client/client", CollUtil.toList("ADMIN", "TEST"));
+        resourceRolesMap.put("/auth/logout", CollUtil.toList("ADMIN"));
     }
 
     @Override

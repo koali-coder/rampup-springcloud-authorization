@@ -51,7 +51,6 @@ public class SecurityConfig {
         http.addFilterBefore(ignoreUrlsRemoveJwtFilter, SecurityWebFiltersOrder.AUTHENTICATION);
 
         http.authorizeExchange()
-                // todo 可以删除
                 .pathMatchers(ArrayUtil.toArray(ignoreUrlsConfig.getUrls(),String.class)).permitAll()//白名单配置
                 .anyExchange().access(authorizationHandler)//鉴权管理器配置
                 .and().exceptionHandling()

@@ -1,17 +1,21 @@
 package org.example.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2TokenType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,10 +35,13 @@ public class ConsentController {
     private final RegisteredClientRepository registeredClientRepository;
     private final OAuth2AuthorizationConsentService authorizationConsentService;
 
+    private final OAuth2AuthorizationService authorizationService;
+
     public ConsentController(RegisteredClientRepository registeredClientRepository,
-                             OAuth2AuthorizationConsentService authorizationConsentService) {
+                             OAuth2AuthorizationConsentService authorizationConsentService, OAuth2AuthorizationService authorizationService) {
         this.registeredClientRepository = registeredClientRepository;
         this.authorizationConsentService = authorizationConsentService;
+        this.authorizationService = authorizationService;
     }
 
     @ResponseBody
@@ -82,6 +89,23 @@ public class ConsentController {
         model.addAttribute("principalName", principal.getName());
 
         return "consent";
+    }
+
+    @DeleteMapping("/logout")
+    public Boolean logout(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader) {
+        String token = authHeader.replace(OAuth2AccessToken.TokenType.BEARER.getValue(), Strings.EMPTY).trim();
+        OAuth2Authorization authorization = authorizationService.findByToken(token, OAuth2TokenType.ACCESS_TOKEN);
+        if (authorization == null) {
+            return true;
+        }
+
+        OAuth2Authorization.Token<OAuth2AccessToken> accessToken = authorization.getAccessToken();
+        if (accessToken == null) {
+            return true;
+        }
+        // 清空access token
+        authorizationService.remove(authorization);
+        return true;
     }
 
     private static Set<ScopeWithDescription> withDescription(Set<String> scopes) {

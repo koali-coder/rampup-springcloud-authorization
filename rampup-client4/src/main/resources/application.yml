@@ -1,0 +1,23 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: magus-client
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_HOST:220.248.70.147}:${NACOS_PORT:58848}
+
+  # 数据库
+  datasource:
+    jdbc-url: jdbc:mysql://127.0.0.1:3306/druid_test_master
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    # 显示sql语句
+    # show-sql: true
+    hibernate:
+      # 自动建表
+      ddl-auto: update
